@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Hatalı İrsaliye/Fatura Bildirim Formu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .form-container { max-width: 800px; margin: 2rem auto; padding: 25px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .required::after { content: "*"; color: red; margin-left: 3px; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h3 class="mb-4">Hata Bildirim Formu</h3>
+        <form id="hataForm" onsubmit="handleSubmit(event)">
+            <!-- Mağaza Seçimi -->
+            <div class="mb-3">
+                <label class="form-label required">Mağaza Adı</label>
+                <select name="magaza" class="form-select" required>
+                    <option value="">Seçiniz</option>
+                    <option>Dikmen</option>
+                    <option>İlker</option>
+                    <option>Sinan</option>
+                    <option>Hürriyet</option>
+                    <option>Öveçler</option>
+                    <option>İncek</option>
+                    <option>Dikmen Ekmekçilik</option>
+                </select>
+            </div>
+
+            <!-- Belge Numarası -->
+            <div class="mb-3">
+                <label class="form-label required">Hatalı Belge Numarası</label>
+                <input type="text" name="belge_no" class="form-control" pattern="[A-Za-z0-9-]+" required>
+                <small class="text-muted">Sadece harf, rakam ve tire (-) kabul edilir</small>
+            </div>
+
+            <!-- Ürün Bilgileri -->
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label required">Hatalı Ürün Adı</label>
+                    <input type="text" name="urun_adi" class="form-control" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label required">Belgedeki Miktar</label>
+                    <input type="number" name="belge_miktar" class="form-control" min="1" step="1" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label required">Teslim Edilen Miktar</label>
+                    <input type="number" name="teslim_miktar" class="form-control" min="0" step="1" required>
+                </div>
+            </div>
+
+            <!-- QR Kod Yükleme -->
+            <div class="mb-4">
+                <label class="form-label required">QR Kod Görseli</label>
+                <input type="file" name="qr_kod" class="form-control" accept="image/*,.pdf,.doc,.docx" required>
+                <small class="text-muted">Kabul edilen formatlar: JPG, PNG, PDF, DOC (Max 5MB)</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Gönder</button>
+        </form>
+    </div>
+
+    <script>
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            
+            try {
+                const response = await fetch('SCRIPT_URL', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if(response.ok) {
+                    form.reset();
+                    alert('Bildiriminiz başarıyla gönderildi!');
+                }
+            } catch(error) {
+                alert('Hata oluştu: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
